@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt      DateTime  @default(now()) @db.Date
+  password       String
+  username       String    @unique
+  profilePicLink String
+  College        College[] // Colleges created by the user
+  Posts          Post[]
+
+  // Relation to track which colleges this user has liked
+  likedColleges UserCollegeLike[]
+  upvotedPosts  UserPostUpvote[]
+  comments      Comment[]
+  likedImages   UserImageLike[]
+}
+
+model College {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now()) @db.Date
+
+  name        String @unique
+  description String
+  likes       Int    @default(0)
+
+  // Reference to the User who created the college
+  createdBy String @db.ObjectId
+  creator   User   @relation(fields: [createdBy], references: [id])
+
+  images Image[]
+  posts  Post[]
+
+  // Relation to track which users have liked this college
+  likedBy UserCollegeLike[]
+
+  @@index([createdBy])
+}
+
+model UserCollegeLike {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String @db.ObjectId
+  collegeId String @db.ObjectId
+
+  user    User    @relation(fields: [userId], references: [id])
+  college College @relation(fields: [collegeId], references: [id])
+
+  createdAt DateTime @default(now()) @db.Date
+
+  @@unique([userId, collegeId]) // Ensure a user can like a college only once
+}
+
+// Embedded type for images within the College model
+model Image {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  imageURL String
+  likes    Int    @default(0)
+
+  // Reference to the User who uploaded the image
+  uploadedBy String    @db.ObjectId
+  uploadedAt DateTime? @default(now()) @db.Date
+
+  College   College?        @relation(fields: [collegeId], references: [id])
+  collegeId String?         @db.ObjectId
+  likedBy   UserImageLike[]
+
+  @@index([uploadedBy])
+}
+
+model Post {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now()) @db.Date
+  College   College? @relation(fields: [collegeId], references: [id])
+  collegeId String?  @db.ObjectId
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @db.ObjectId
+
+  postTitle       String
+  postDescription String
+  upvotes         Int              @default(0)
+  upvoteData      UserPostUpvote[]
+  comments        Comment[]
+}
+
+model UserPostUpvote {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  postId String @db.ObjectId
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  createdAt DateTime @default(now()) @db.Date
+
+  @@unique([userId, postId]) // Ensure a user can upvote a post only once
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  createdAt DateTime @default(now()) @db.Date
+
+  // Reference to the User who made the comment
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Reference to the Post on which the comment was made
+  postId String @db.ObjectId
+  post   Post   @relation(fields: [postId], references: [id])
+
+  @@index([userId, postId])
+}
+
+model MailingList {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now()) @db.Date
+
+  email String @unique
+}
+
+model UserImageLike {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  imageId String @db.ObjectId
+
+  user  User  @relation(fields: [userId], references: [id])
+  image Image @relation(fields: [imageId], references: [id])
+
+  createdAt DateTime @default(now()) @db.Date
+
+  @@unique([userId, imageId]) // Ensure a user can like an image only once
+}

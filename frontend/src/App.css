@@ -1,0 +1,14 @@
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  /* background-color: rgba(255, 208, 21, 0.5); */
+  /* background-color: #ffe168; */
+  stroke-opacity: 50%;
+  /* color: #000000; */
+
+  background-color: #918ca5;
+
+  color: #000; /* Black text */
+}

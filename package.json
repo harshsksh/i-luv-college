@@ -1,0 +1,30 @@
+{
+  "name": "i-luv-college",
+  "version": "1.0.0",
+  "main": "backend/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server.js",
+    "postinstall": "prisma generate",
+    "devstart": "nodemon backend/server.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend ",
+    "prisma": "npx prisma generate",
+    "frontend-build": "npm run build --prefix frontend"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.16.1",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "prerender-node": "^3.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "prisma": "^6.16.1"
+  }
+}
