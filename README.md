@@ -11,7 +11,7 @@
 
 ## 🚀 Live Demo
 
-**[View Live Application](https://your-app-url.vercel.app)** *(Replace with actual deployment URL)*
+**[View Live Application](https://i-luv-college-1.vercel.app/)** *(Replace with actual deployment URL)*
 
 ## 📋 Table of Contents
 
