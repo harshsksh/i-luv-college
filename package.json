@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node backend/server.js",
-    "postinstall": "prisma generate",
+    "postinstall": "npx prisma generate",
     "devstart": "nodemon backend/server.js",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend ",
     "prisma": "npx prisma generate",
